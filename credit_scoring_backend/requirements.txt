@@ -1,5 +1,7 @@
 flask==3.0.2
 flask-cors==4.0.0
 python-dotenv==1.0.1
-SQLAlchemy==2.0.25  # For database operations
-pytest==8.0.0  # For testing
+# This is for database operations
+SQLAlchemy==2.0.25  
+# This is for testing
+pytest==8.0.0  
