@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Welcome to the Credit Scoring App!"
+    return "Welcome to the Synergy Credit Scoring Tool!"
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:hotdog123@localhost/credit_db'
