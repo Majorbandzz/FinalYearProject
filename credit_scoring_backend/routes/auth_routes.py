@@ -9,7 +9,8 @@ auth_blueprint = Blueprint('auth_blueprint', __name__)
 @auth_blueprint.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-
+    print("Received data:", data) 
+    
     existing_user = User.query.filter_by(email=data['email']).first()
     if existing_user:
         return jsonify({"message": "User already exists!"}), 400
@@ -42,4 +43,12 @@ def login():
 
     access_token = create_access_token(identity=user.user_id)
 
-    return jsonify({"access_token": access_token}), 200
+    return jsonify({
+    'access_token': access_token,
+    'user': {
+        'name': user.name,
+        'email': user.email,
+        'credit_score': user.credit_score or 0
+    }
+}), 200
+

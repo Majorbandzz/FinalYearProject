@@ -1,42 +1,42 @@
 import React from "react";
+import { Toaster } from 'react-hot-toast';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import PrivateRoute from "./pages/PrivateRoute";
 import Signup from "./pages/Signup";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import Dashboard from "./pages/Dashboard";
+import CreditForm from "./pages/CreditForm";
 
 function App() {
   return (
-    <div>
-      <h1 className="text-2xl text-blue-500">Test to see if tailwind workds</h1>
-      <h1 className="text-4xl font-bold text-green-500">Yes CSS is working</h1>
+    <Router>
+      <Toaster position="top-center" reverseOrder={false} />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<LoginPage />} />
+ 
 
-      <Signup />
-    </div>
+        <Route 
+          path="/dashboard" 
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/credit-form" 
+          element={
+            <PrivateRoute>
+              <CreditForm />
+            </PrivateRoute>
+          } 
+        />
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
-
-
-
-
-
-/*import React from "react";
-import Signup from "./pages/Signup";
-
-function App() {
-  return (
-    <div className="App">
-      <h1 className="text-3xl text-red-500">Testing App Load</h1>
-      <Signup />
-    </div>
-  );
-}
-export default App; */
-
-/*function App() {
-  return (
-    <div className="App">
-      <Signup />
-    </div>
-  );
-}
-
-export default App;*/

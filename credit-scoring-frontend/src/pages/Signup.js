@@ -1,16 +1,6 @@
-const Signup = () => {
-  return (
-    <div className="text-center p-10">
-      <h2 className="text-2xl font-bold text-blue-600">Signup Page</h2>
-    </div>
-  );
-};
-
-export default Signup;
-
-/*import { useState } from "react";
+import { useState } from "react"; 
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +11,7 @@ const Signup = () => {
     address: "",
     password: "",
   });
+
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -34,8 +25,8 @@ const Signup = () => {
 
     try {
       const response = await axios.post("http://127.0.0.1:5000/auth/register", formData);
-      alert("Registration successful! You can now log in.");
-      navigate("/login");
+      alert("Registration successful! You can now use this to log in.");
+      navigate("/dashboard");
     } catch (error) {
       setError(error.response?.data?.message || "Something went wrong");
     }
@@ -46,19 +37,76 @@ const Signup = () => {
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-800">Sign Up</h2>
         {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
-        <form onSubmit={handleSubmit} className="mt-4">
-          <input name="name" type="text" placeholder="Full Name" onChange={handleChange} className="input-field" required />
-          <input name="email" type="email" placeholder="Email" onChange={handleChange} className="input-field" required />
-          <input name="phone_number" type="text" placeholder="Phone Number" onChange={handleChange} className="input-field" required />
-          <input name="date_of_birth" type="date" onChange={handleChange} className="input-field" required />
-          <input name="address" type="text" placeholder="Address" onChange={handleChange} className="input-field" required />
-          <input name="password" type="password" placeholder="Password" onChange={handleChange} className="input-field" required />
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 mt-4">Register</button>
+
+        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+          <input
+            name="name"
+            type="text"
+            placeholder="Full Name"
+            onChange={handleChange}
+            value={formData.name}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            onChange={handleChange}
+            value={formData.email}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <input
+            name="phone_number"
+            type="text"
+            placeholder="Phone Number"
+            onChange={handleChange}
+            value={formData.phone_number}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <input
+            name="date_of_birth"
+            type="date"
+            onChange={handleChange}
+            value={formData.date_of_birth}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <input
+            name="address"
+            type="text"
+            placeholder="Address"
+            onChange={handleChange}
+            value={formData.address}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            value={formData.password}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+            Register
+          </button>
         </form>
+
+        {/* Login Prompt */}
+        <p className="text-center text-sm text-gray-600 mt-4">
+          Already signed up?{" "}
+          <Link to="/login" className="text-blue-500 hover:underline">
+            Login here
+          </Link>
+        </p>
       </div>
     </div>
   );
 };
 
 export default Signup;
-*/
