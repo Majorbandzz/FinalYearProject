@@ -1,73 +1,100 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import axios from '../api';
+import { useUser } from '../context/UserContext';
 
-function CreditForm() {
+const CreditForm = () => {
   const navigate = useNavigate();
+  const { user, refreshUser } = useUser();
+
   const [formData, setFormData] = useState({
-    income: '',
-    on_time_payments: '',
+    total_payments: '',
     missed_payments: '',
     total_credit_limit: '',
     credit_used: '',
     credit_history_length: '',
     credit_accounts: '',
-    recent_inquiries: ''
   });
 
-  const [error, setError] = useState('');
-
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+
+    if (!user || !user.user_id) {
+      toast.error('User not logged in');
+      return;
+    }
 
     try {
-      const token = localStorage.getItem('token');
+      
+      const dataToSubmit = {
+        total_payments: Number(formData.total_payments) || 0,
+        missed_payments: Number(formData.missed_payments) || 0,
+        total_credit_limit: Number(formData.total_credit_limit) || 0,
+        credit_used: Number(formData.credit_used) || 0,
+        credit_history_length: Number(formData.credit_history_length) || 0,
+        credit_accounts: Number(formData.credit_accounts) || 0,
+        user_id: user.user_id
+      };
 
-      const response = await axios.post('http://127.0.0.1:5000/cscore', formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      
+      await axios.post('/cscore/submit', dataToSubmit);
 
-      console.log('Credit score calculated:', response.data.score);
+      
+      await refreshUser();
+      toast.success('Credit score submitted!');
       navigate('/dashboard');
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || 'Failed to submit credit data.');
+      toast.error('Failed to submit credit data');
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Credit Score Form</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md bg-white shadow-lg rounded-lg p-6"
+      >
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Credit Data Form</h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {Object.keys(formData).map((field) => (
-            <div key={field}>
-              <label className="block mb-1 font-medium capitalize">{field.replace(/_/g, ' ')}</label>
-              <input
-                type="number"
-                name={field}
-                value={formData[field]}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                required
-              />
-            </div>
-          ))}
+        {[ 
+          { name: 'total_payments', label: 'Total Payments' },
+          { name: 'missed_payments', label: 'Missed Payments' },
+          { name: 'total_credit_limit', label: 'Total Credit Limit' },
+          { name: 'credit_used', label: 'Credit Used' },
+          { name: 'credit_history_length', label: 'Credit History Length (months)' },
+          { name: 'credit_accounts', label: 'Number of Credit Accounts' },
+        ].map(({ name, label }) => (
+          <div key={name} className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">{label}</label>
+            <input
+              type="number"
+              name={name}
+              value={formData[name]}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+            />
+          </div>
+        ))}
 
-          <button type="submit" className="w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">
-            Submit
-          </button>
-        </form>
-      </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+        >
+          Submit
+        </button>
+      </form>
     </div>
   );
-}
+};
 
 export default CreditForm;

@@ -6,7 +6,6 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone_number: "",
     date_of_birth: "",
     address: "",
     password: "",
@@ -25,8 +24,8 @@ const Signup = () => {
 
     try {
       const response = await axios.post("http://127.0.0.1:5000/auth/register", formData);
-      alert("Registration successful! You can now use this to log in.");
-      navigate("/dashboard");
+      alert("Registration successful! Please log in to continue.");
+      navigate("/login");
     } catch (error) {
       setError(error.response?.data?.message || "Something went wrong");
     }
@@ -54,15 +53,6 @@ const Signup = () => {
             placeholder="Email"
             onChange={handleChange}
             value={formData.email}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <input
-            name="phone_number"
-            type="text"
-            placeholder="Phone Number"
-            onChange={handleChange}
-            value={formData.phone_number}
             className="w-full p-2 border rounded"
             required
           />

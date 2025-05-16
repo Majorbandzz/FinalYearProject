@@ -1,7 +1,12 @@
-import axios from "axios";
+// In your api.js (axios instance)
+import axios from 'axios';
 
-const API = axios.create({
-  baseURL: "http://127.0.0.1:5000", //This is where my flask backend will be displayed
+const api = axios.create({
+    baseURL: 'http://localhost:5000', // or your backend URL
+    withCredentials: true, // This is important for sending cookies
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
 
-export default API;
+export default api;

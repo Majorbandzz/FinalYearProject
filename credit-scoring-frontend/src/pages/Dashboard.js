@@ -1,88 +1,89 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useUser } from '../context/UserContext';
+import axios from '../api';
 
-function Dashboard() {
-  const [creditScore, setCreditScore] = useState(null);
-  const [name, setName] = useState('');
-  const [loading, setLoading] = useState(true);
+const Dashboard = () => {
+  const { user, setUser, refreshUser } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          console.error('No token found');
-          return;
+    if (!user) {
+      const fetchUserData = async () => {
+        try {
+          await refreshUser();
+        } catch (err) {
+          toast.error('Failed to load user data');
+          navigate('/login');
         }
+      };
 
-        console.log("Attempting to fetch with token:", token);
-        const response = await axios.get('http://127.0.0.1:5000/users/me', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+      fetchUserData();
+    }
+  }, [user, setUser, navigate, refreshUser]);
 
-        console.log("Response data:", response.data);
-        setCreditScore(response.data.credit_score);
-        setName(response.data.name);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
+  const handleFillForm = () => {
+    navigate('/credit-form');
   };
 
+  const handleLogout = async () => {
+    try {
+      await axios.post('/auth/logout');
+      setUser(null);
+      navigate('/login');
+    } catch (err) {
+      toast.error('Logout failed');
+  }
+};
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-600 text-xl">
+        Loading...
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* Header */}
-      <header className="p-6 bg-blue-600 text-white flex justify-between items-center shadow">
-        <h1 className="text-2xl font-bold">Welcome {name || 'User'}</h1>
-        <button 
-          onClick={handleLogout}
-          className="px-4 py-2 bg-white text-blue-600 rounded-2xl hover:bg-gray-100 transition"
-        >
-          Log Out
-        </button>
-      </header>
+    <div className="min-h-screen bg-gray-100 relative px-4 py-4">
+    
+      <div
+        className="absolute top-4 left-4 text-blue-600 font-bold cursor-pointer hover:underline"
+        onClick={() => navigate('/dashboard')}
+      >
+        SynergyScore
+      </div>
 
-      {/* Main Content */}
-      <main className="flex-grow flex flex-col items-center justify-center text-center p-8">
-        {loading ? (
-          <p className="text-gray-600 text-lg">Loading...</p>
-        ) : (
-          <>
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">
-              Your Credit Score: <span className="text-green-500">{creditScore || 'N/A'}</span>
-            </h2>
-            <p className="text-lg text-gray-600 mb-8">
-              {creditScore > 0
-                ? "Great work! Keep maintaining good financial habits."
-                : "You haven't filled out your credit profile yet. Let's get started!"}
-            </p>
-            <button 
-              onClick={() => navigate('/credit-form')}
-              className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
+      <div className="flex items-center justify-center h-full">
+        <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">Welcome, {user.name || 'User'}</h2>
+          <p className="text-lg text-gray-700 mb-6">
+            Your credit score is:{' '}
+            <span className="font-semibold text-blue-600">{user.credit_score ?? 0}</span>
+          </p>
+
+          
+          {(!user.credit_score || user.credit_score === 0) && (
+            <button
+              onClick={handleFillForm}
+              className="w-full mb-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition"
             >
-              {creditScore > 0 ? "View Detailed Report" : "Fill Credit Score Form"}
+              Fill Credit Score Form
             </button>
-          </>
-        )}
-      </main>
+          )}
 
-      {/* Footer */}
-      <footer className="w-full p-4 bg-white shadow text-center text-gray-500 text-sm">
-        &copy; {new Date().getFullYear()} SynergyScore — Stay Credit Smart
-      </footer>
+         
+          <button
+            onClick={handleLogout}
+            className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded transition"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default Dashboard;
