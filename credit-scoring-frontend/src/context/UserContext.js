@@ -1,4 +1,4 @@
-// context/UserContext.js
+
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from '../api';
 
@@ -13,7 +13,7 @@ export const UserProvider = ({ children }) => {
       const userData = response.data;
       console.log('Fetched user:', userData);
       
-      // If the response has a user object, use that, otherwise use the data directly
+
       const user = userData.user || userData;
       setUser(user);
     } catch (err) {
