@@ -23,7 +23,7 @@ export const UserProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    refreshUser(); // Always try to fetch the current user on load
+    refreshUser(); 
   }, []);
 
   return (
