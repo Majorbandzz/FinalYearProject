@@ -7,36 +7,28 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-const refreshUser = async () => {
-  try {
-    setIsLoading(true);
-    const response = await axios.get('/auth/user');
-    const userData = response.data;
-
-    const user = userData.user || userData;
-    setUser(user);
-  } catch (err) {
-    console.error('Failed to refresh user:', err);
-    if (err.response?.status === 401) {
-      setUser(null);
+  const refreshUser = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get('/auth/user');
+      const userData = response.data;
+      console.log('Fetched user:', userData);
+      
+      const user = userData.user || userData;
+      setUser(user);
+    } catch (err) {
+      console.error('Failed to refresh user:', err);
+      if (err.response?.status === 401) {
+        setUser(null);
+      }
+    } finally {
+      setIsLoading(false);
     }
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        await refreshUser();
-      } catch (err) {
-        console.error('Error fetching user data:', err);
-      }
-    };
-  
-    checkAuth();
+    refreshUser();
   }, []);
-  
 
   return (
     <UserContext.Provider value={{ user, setUser, refreshUser, isLoading }}>
@@ -44,4 +36,5 @@ const refreshUser = async () => {
     </UserContext.Provider>
   );
 };
+
 export const useUser = () => useContext(UserContext);
