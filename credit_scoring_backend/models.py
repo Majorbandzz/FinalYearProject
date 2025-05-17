@@ -22,6 +22,7 @@ class User(db.Model):
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password_hash, password)
 
+
 class UserCreditData(db.Model):
     __tablename__ = 'user_credit_data'
 
@@ -36,3 +37,16 @@ class UserCreditData(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     user = db.relationship('User', backref=db.backref('credit_data', uselist=False, cascade="all, delete-orphan"))
+
+class Payment(db.Model):
+    __tablename__ = 'payments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    missed = db.Column(db.Boolean, default=False)
+    on_time = db.Column(db.Boolean, default=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('payments', lazy=True, cascade="all, delete-orphan"))

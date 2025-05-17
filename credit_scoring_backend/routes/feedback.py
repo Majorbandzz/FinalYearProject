@@ -1,76 +1,52 @@
-from flask import Blueprint, request, jsonify
-from models import db, User, Payment
+from flask import Blueprint, request, jsonify, session
+from models import db, Payment, User
+from datetime import datetime
+from sqlalchemy.exc import SQLAlchemyError
 
 feedback_bp = Blueprint('feedback', __name__)
 
+@feedback_bp.route('/', methods=['POST'])
+def generate_feedback():
+    user_id = session.get('user_id')
+    
+    if not user_id:
+        return jsonify({'message': 'Unauthorized'}), 401
 
-@feedback_bp.route('/feedback', methods=['POST'])
-def feedback():
     data = request.get_json()
-
-    user_id = data.get('user_id')
     income = data.get('income')
     total_spending = data.get('total_spending')
     payments = data.get('payments', [])
 
-    if not user_id or income is None or total_spending is None:
-        return jsonify({'message': 'Missing required fields'}), 400
-
-    for p in payments:
-        name = p.get('name')
-        amount = p.get('amount')
-        missed = p.get('missed', False)
-        on_time = p.get('onTime', False)
-
-        if name and amount is not None:
-            new_payment = Payment(
-                user_id=user_id,
-                name=name,
-                amount=amount,
-                missed=missed,
-                on_time=on_time
-            )
-            db.session.add(new_payment)
-
-    db.session.commit()
-
-    missed_payments = [p for p in payments if p.get('missed')]
-    on_time_payments = [p for p in payments if p.get('onTime')]
-    payments_made = payments
-
     feedback = []
 
-    if missed_payments and sum(p['amount'] for p in missed_payments if 'amount' in p) > 0:
-        feedback.append("Try to reduce missed payments. They lower your score.")
+    try:
+        for p in payments:
+            payment = Payment(
+                user_id=user_id,
+                name=p['name'],
+                amount=p['amount'],
+                missed=p.get('missed', False),
+                on_time=p.get('onTime', False)
+            )
+            db.session.add(payment)
 
-    if total_spending > income * 0.4:
-        feedback.append("Your monthly spending is more than 40% of your income. Try to lower it.")
+        db.session.commit()
 
-    if payments_made:
-        avg_payment = sum(p['amount'] for p in payments_made if 'amount' in p) / len(payments_made)
-        if avg_payment > 100:
-            feedback.append("You're making large payments. Consider using a debit card for small purchases to avoid interest.")
+        missed = [p for p in payments if p.get('missed')]
+        on_time = [p for p in payments if p.get('onTime')]
 
-    if len(on_time_payments) < len(payments_made):
-        feedback.append("Increase the number of on-time payments to build a better score.")
+        if missed:
+            feedback.append(f"You missed {len(missed)} payments. Try setting up direct debits for {missed[0]['name']}.")
+        if on_time:
+            feedback.append(f"You made {len(on_time)} payments on time. Great job staying consistent!")
+        if total_spending > income * 0.5:
+            feedback.append("Your monthly spending exceeds 50% of your income. Consider budgeting to improve your creditworthiness.")
+        if not missed and not on_time:
+            feedback.append("No payment status marked. Mark payments as 'missed' or 'on time' to receive targeted advice.")
 
-    if not feedback:
-        feedback.append("You're on the right track! Keep up your consistent payment behavior.")
+        return jsonify({'feedback': feedback})
 
-    return jsonify({'feedback': feedback}), 200
-
-
-@feedback_bp.route('/payments/<int:user_id>', methods=['GET'])
-def get_payments(user_id):
-    payments = Payment.query.filter_by(user_id=user_id).order_by(Payment.timestamp.desc()).all()
-    result = [
-        {
-            'name': p.name,
-            'amount': p.amount,
-            'missed': p.missed,
-            'on_time': p.on_time,
-            'timestamp': p.timestamp.strftime('%Y-%m-%d %H:%M:%S')
-        }
-        for p in payments
-    ]
-    return jsonify({'payments': result}), 200
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(f"Database error: {str(e)}")
+        return jsonify({'error': 'Failed to save payments or generate feedback'}), 500

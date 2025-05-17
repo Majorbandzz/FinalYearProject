@@ -1,5 +1,4 @@
-from flask import Blueprint, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import Blueprint, jsonify, session
 from models import User
 
 user_blueprint = Blueprint("user_blueprint", __name__)
@@ -9,11 +8,12 @@ def test():
     return {"message": "The user route works smoothly!"}
 
 @user_blueprint.route('/me', methods=['GET'])
-@jwt_required()
 def get_user_profile():
-    user_id = get_jwt_identity()
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({'message': 'User not logged in'}), 401
+
     user = User.query.filter_by(user_id=user_id).first()
-    
     if not user:
         return jsonify({'message': 'User not found'}), 404
 
@@ -32,4 +32,3 @@ def options_user_profile():
     response.headers.add('Access-Control-Allow-Methods', 'GET, OPTIONS')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
     return response
-

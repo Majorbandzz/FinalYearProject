@@ -9,6 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import CreditForm from "./pages/CreditForm";
 import HPage from "./pages/HPage";
+import FeedbackReport from "./pages/FeedbackReport";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/credit-form" element={<PrivateRoute><CreditForm /></PrivateRoute>} />
+          <Route path="/feedback-report" element={<PrivateRoute><FeedbackReport /></PrivateRoute>} />
         </Routes>
       </Router>
     </UserProvider>

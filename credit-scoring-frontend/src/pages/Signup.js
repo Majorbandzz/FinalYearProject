@@ -87,7 +87,7 @@ const Signup = () => {
           </button>
         </form>
 
-        {/* Login Prompt */}
+        
         <p className="text-center text-sm text-gray-600 mt-4">
           Already signed up?{" "}
           <Link to="/login" className="text-blue-500 hover:underline">

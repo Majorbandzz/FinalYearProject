@@ -1,16 +1,18 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 function PrivateRoute({ children }) {
-  const token = localStorage.getItem('token'); // This check if the user has a token
+  const { user, isLoading } = useUser();
 
-  if (!token) {
-    // If no token, this will redirect to login
+  if (isLoading) {
+    return <div>Loading...</div>; 
+  }
+
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // If token exists, allow them to authority to see the page
   return children;
 }
-
 export default PrivateRoute;

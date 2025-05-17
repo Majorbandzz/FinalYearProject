@@ -8,9 +8,8 @@ auth_blueprint = Blueprint('auth_blueprint', __name__)
 @auth_blueprint.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    
-    existing_user = User.query.filter_by(email=data['email']).first()
-    if existing_user:
+
+    if User.query.filter_by(email=data['email']).first():
         return jsonify({"message": "User already exists!"}), 400
 
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
@@ -20,7 +19,7 @@ def register():
         email=data['email'],
         date_of_birth=data['date_of_birth'],
         address=data['address'],
-        password_hash=hashed_password  
+        password_hash=hashed_password
     )
 
     db.session.add(new_user)
@@ -33,21 +32,25 @@ def login():
     data = request.get_json()
 
     user = User.query.filter_by(email=data['email']).first()
-
-    if not user or not user.check_password(data['password']):  
+    if not user or not user.check_password(data['password']):
         return jsonify({"message": "Invalid credentials!"}), 401
 
     session['user_id'] = user.user_id
-    session['email'] = user.email
-
     return jsonify({
         'message': 'Login successful!',
         'user': {
+            'user_id': user.user_id,
             'name': user.name,
             'email': user.email,
             'credit_score': user.credit_score or 0
         }
     }), 200
+
+@auth_blueprint.route('/logout', methods=['POST'])
+def logout():
+    session.pop('user_id', None)
+    return jsonify({"message": "Logged out"})
+
 
 @auth_blueprint.route('/user', methods=['GET'])
 def get_current_user():
@@ -59,6 +62,8 @@ def get_current_user():
     if not user:
         return jsonify({'message': 'User not found'}), 404
 
+    print(f"Retrieved user data for ID {user_id}: Name - {user.name}, Credit Score - {user.credit_score}")  # Log user data
+
     return jsonify({
         'user': {
             'name': user.name,
@@ -66,3 +71,4 @@ def get_current_user():
             'credit_score': user.credit_score or 0,
         }
     }), 200
+

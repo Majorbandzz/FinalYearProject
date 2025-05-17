@@ -12,7 +12,6 @@ def create_user():
         new_user = User(
             name=data['name'],
             email=data['email'],
-            phone_number=data.get('phone_number', ''),
             date_of_birth=data['date_of_birth'],
             address=data['address']
         )
