@@ -9,50 +9,50 @@ const creditCardData = [
   {
     bank: 'NovaBank',
     name: 'Nova Rewards Card',
-    description: '3% cashback, free airport lounge access',
+    description: 'With this credit card, members receive a 3% cashback, and free airport lounge access at selected airports',
     minScore: 700,
   },
   {
     bank: 'Zenith Bank',
     name: 'Zenith Builder',
-    description: 'Helps build credit, low limit',
+    description: 'This card is a life saver for individuals who have never owned a credit card before, or have no credit history. This card helps individuals build credit, and has a limit of £300',
     minScore: 0,
   },
  
   {
     bank: 'Orion Financial',
     name: 'Orion Travel Elite',
-    description: 'No foreign transaction fees, travel insurance',
+    description: 'This credit card allows you to spend your money freely in foreign countries, knowing that you will not be charged any hidden and foreign transaction fees. This credit card gives members ultimate travel insurance',
     minScore: 750,
   },
   {
     bank: 'TrustLine',
     name: 'Trust Secure',
-    description: 'Low APR card',
+    description: 'This is a Low APR card for individuals who are not great at managing their credit, this card allows you to build back up your credit score by enabling cheaper  borrowing',
     minScore: 600,
   },
   {
     bank: 'FutureBank',
     name: 'Future Cashback',
-    description: '2% cashback on all purchases',
+    description: 'This is a credit card for everyday us which grants you a 2% cashback on all purchases, which you can contribute to paying your card off',
     minScore: 680,
   },
   {
     bank: 'Horizon Bank',
     name: 'Horizon Student',
-    description: 'Special rates for students',
+    description: 'This is a credit card specialised for students in university. There is more information about this card on their website!',
     minScore: 500,
   },
   {
     bank: 'Pulse Credit Union',
     name: 'Pulse Low APR',
-    description: 'Low APR card for rebuilding credit',
+    description: 'This is Low APR card for rebuilding credit, and has a maximum spend of £150',
     minScore: 400,
   },
   {
     bank: 'Aurora Bank',
     name: 'Aurora Low Rate',
-    description: 'Consistently low interest rates on all purchases',
+    description: 'This credit card consistently gives you low interest rates on all purchases',
     minScore: 500,
   },
 ];
