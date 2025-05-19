@@ -1,0 +1,6 @@
+During the times that I did not code I was carrying out research based around the project and looking at different way I could improve my code in terms of the UI, credit scoring logic and features that I could add on before the submission. 
+February 2025-March 2025- Research on the backend for my code ensuring that MYSQL would work efficiently whilst I dropped, modified and inserted tables whilst also registering new users.
+April 1st- April 10 - I was still working and making progress on my code however, my files would not commit properly and source control had thousands of python files in staged changes which i could not unstage
+April 10- 20th- Research on how to fix my visual studio code after python libraries were downloaded in the virual environment for the frontend breaking the code
+April 30th- I was finally able to commit my files properly but it had to be all at once, I could not stage a singular change, all my changes had to be uploaded at once for some reason
+May- I was able to commit my files again but waited before committing frequenlty because I had to finish modifying all related code as some had error and some didn't, and I couldn't just stage one file and push it, i was forced to stage all of them before doing so
