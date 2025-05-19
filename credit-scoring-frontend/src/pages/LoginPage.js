@@ -18,7 +18,7 @@ function LoginPage() {
     setLoading(true);
     
     try {
-      const response = await api.post("/auth/login", { email, password });
+      await api.post("/auth/login", { email, password });
 
       toast.success("Logged in successfully! ✅");
       await refreshUser();

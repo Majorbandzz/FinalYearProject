@@ -23,7 +23,7 @@ const Signup = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://127.0.0.1:5000/auth/register", formData);
+      await axios.post("http://127.0.0.1:5000/auth/register", formData);
       alert("Registration successful! Please log in to continue.");
       navigate("/login");
     } catch (error) {

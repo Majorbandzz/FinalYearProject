@@ -62,7 +62,7 @@ def get_current_user():
     if not user:
         return jsonify({'message': 'User not found'}), 404
 
-    print(f"Retrieved user data for ID {user_id}: Name - {user.name}, Credit Score - {user.credit_score}")  # Log user data
+    print(f"Retrieved user data for ID {user_id}: Name - {user.name}, Credit Score - {user.credit_score}") 
 
     return jsonify({
         'user': {
