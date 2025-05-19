@@ -15,7 +15,7 @@ const creditCardData = [
   {
     bank: 'Zenith Bank',
     name: 'Zenith Builder',
-    description: 'This card is a life saver for individuals who have never owned a credit card before, or have no credit history. This card helps individuals build credit, and has a limit of £300',
+    description: 'This card is a life saver for individuals who have never owned a credit card before, or have no credit history. This card helps individuals build credit, with 0% APR for the first year, and has a limit of £300',
     minScore: 0,
   },
  
